@@ -1,0 +1,8 @@
+node_modules/
+.next/
+.soroban/
+target/
+*.wasm
+*.log
+.DS_Store
+.env.local

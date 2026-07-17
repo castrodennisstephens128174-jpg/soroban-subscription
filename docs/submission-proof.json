@@ -1,0 +1,12 @@
+{
+  "network": "testnet",
+  "chain": "soroban",
+  "contract_id": null,
+  "tx_hash": null,
+  "submitted_by": "Angpao",
+  "submitted_by_owner": "d23930249",
+  "deployed_at": null,
+  "invoke_at": null,
+  "invoke_method": "lock",
+  "notes": "Run bun scripts/deploy-testnet.ts to fill contract_id. Then run bun scripts/invoke-testnet.ts to fill tx_hash."
+}

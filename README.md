@@ -1,6 +1,6 @@
-# Angpao Subs Dapp
+# Bakti Subs Dapp
 
-> A **angpao-subs-dapp** dApp — Soroban smart contract on Stellar testnet with a Next.js UI, a Freighter wallet adapter, and a real testnet transaction recorded in `docs/submission-proof.json`. Built by **Dat Quoc Tran** as part of the 110-repo multi-chain fanout.
+> A **bakti-subs-dapp** dApp — Soroban smart contract on Stellar testnet with a Next.js UI, a Freighter wallet adapter, and a real testnet transaction recorded in `docs/submission-proof.json`. Built by **Dat Quoc Tran** as part of the 110-repo multi-chain fanout.
 
 ## What it solves
 
@@ -85,7 +85,7 @@ cat docs/submission-proof.json | jq -r .tx_hash
 
 ## Submission Checklist
 
-- [x] **Public GitHub repository** — github.com/d23930249/angpao-subs-dapp
+- [x] **Public GitHub repository** — github.com/d23930249/bakti-subs-dapp
 - [x] **Working UI** — `bun dev` boots at `http://localhost:3000`
 - [x] **Freighter integration** — popup signing via `@stellar/freighter-api`
 - [x] **Real testnet transaction** — `docs/submission-proof.json`

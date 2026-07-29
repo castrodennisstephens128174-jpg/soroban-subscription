@@ -1,10 +1,31 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function Action({ contractId, action }: { contractId: string; action: "lock" | "release" | "refund" }) {
   const [status, setStatus] = useState<"idle" | "building" | "signing" | "submitted" | "error">("idle");
   const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (status !== "submitted" && status !== "error") return;
+    const timer = setTimeout(() => {
+      setStatus("idle");
+      setError(null);
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [status]);
+
+  async function copyHash() {
+    if (!txHash) return;
+    try {
+      await navigator.clipboard.writeText(txHash);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setError("Clipboard unavailable in this browser");
+    }
+  }
 
   async function run() {
     setStatus("building"); setError(null); setTxHash(null);
@@ -18,7 +39,11 @@ export function Action({ contractId, action }: { contractId: string; action: "lo
       const { hash } = await submitTx(signed.signedTxXdr, networkPassphrase);
       setTxHash(hash);
     } catch (e) {
-      setError((e as Error).message);
+      const raw = (e as Error).message || String(e);
+      const friendly = /fetch|network|ENOTFOUND|ETIMEDOUT|horizon/i.test(raw)
+        ? "Network unreachable — check your connection to Stellar testnet"
+        : raw;
+      setError(friendly);
       setStatus("error");
     }
   }
@@ -33,9 +58,19 @@ export function Action({ contractId, action }: { contractId: string; action: "lo
         {status === "error" && "Retry"}
       </button>
       {txHash && (
-        <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noreferrer" className="text-emerald-400 text-xs font-mono break-all">
-          {txHash} ↗
-        </a>
+        <div className="flex items-center gap-2">
+          <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noreferrer" className="text-emerald-400 text-xs font-mono break-all flex-1">
+            {txHash} ↗
+          </a>
+          <button
+            type="button"
+            onClick={copyHash}
+            aria-label="Copy transaction hash"
+            className="text-xs text-slate-300 hover:text-white border border-slate-600 rounded px-2 py-1"
+          >
+            {copied ? "Copied" : "Copy"}
+          </button>
+        </div>
       )}
       {error && <p className="text-red-400 text-xs">{error}</p>}
     </div>

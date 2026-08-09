@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-export function Connect() {
+export function Connect({ onConnect }: { onConnect: (address: string) => void }) {
   const [pubKey, setPubKey] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -13,6 +13,7 @@ export function Connect() {
       const result = await requestAccess();
       if (result.error) throw new Error(result.error);
       setPubKey(result.address);
+      onConnect(result.address);
     } catch (e) {
       setError((e as Error).message);
     } finally {

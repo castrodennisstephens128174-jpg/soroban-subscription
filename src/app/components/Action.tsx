@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-export function Action({ contractId, action }: { contractId: string; action: "lock" | "release" | "refund" }) {
+export function Action({ contractId, action, walletReady }: { contractId: string; action: "lock" | "release" | "refund"; walletReady: boolean }) {
   const [status, setStatus] = useState<"idle" | "building" | "signing" | "submitted" | "error">("idle");
   const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -50,13 +50,21 @@ export function Action({ contractId, action }: { contractId: string; action: "lo
 
   return (
     <div className="card flex flex-col gap-2">
-      <button className="btn" onClick={run} disabled={status === "building" || status === "signing"}>
+      <button
+        className="btn"
+        onClick={run}
+        disabled={!walletReady || status === "building" || status === "signing"}
+        title={!walletReady ? "Connect Freighter first" : undefined}
+      >
         {status === "idle" && `Run ${action}`}
         {status === "building" && "Building…"}
         {status === "signing" && "Sign in Freighter…"}
         {status === "submitted" && "Submitted ✓"}
         {status === "error" && "Retry"}
       </button>
+      {!walletReady && status === "idle" && (
+        <p className="text-slate-500 text-xs">Connect Freighter to enable this action.</p>
+      )}
       {txHash && (
         <div className="flex items-center gap-2">
           <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noreferrer" className="text-emerald-400 text-xs font-mono break-all flex-1">
